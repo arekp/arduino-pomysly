@@ -1,15 +1,14 @@
 #include "LedControlMS.h"
+#include <Wire.h>
+#include "RTClib.h"
+
+RTC_DS1307 RTC;
+
 #define NBR_MTX 1 
 LedControl lc=LedControl(5,4,3, NBR_MTX);
 
 unsigned long delaytime=300;
-/*
-An open-source binary clock for Arduino.
-Based on the code from by Rob Faludi (http://www.faludi.com)
-Code under (cc) by Daniel Spillere Andrade, www.danielandrade.net
-http://creativecommons.org/license/cc-gpl
-*/
- 
+
 int second=0, minute=0, hour=0; //start the time on 00:00:00
 int munit,hunit,valm=0,valh=0,ledstats,i,secondunit=0;
  
@@ -21,7 +20,13 @@ second=0; minute=0; hour=0;
   Serial.begin (9600);
   Serial.println("Setup");
   
- 
+    Wire.begin();
+    RTC.begin();
+    
+      if (! RTC.isrunning()) {
+    Serial.println("RTC is NOT running!");
+  } 
+  
 pinMode(0, INPUT);
 
   for (int i=0; i< NBR_MTX; i++){
@@ -31,6 +36,7 @@ pinMode(0, INPUT);
   /* and clear the display */
     lc.clearDisplay(i);
   }
+   Serial.println("Koniec SETUP");
 }
  
 void loop() {
@@ -66,11 +72,7 @@ munit = minute%10; //sets the variable munit and hunit for the unit digits
 hunit = hour%10;
 secondunit = second%10;
 
-    Serial.print(hour, bin);
-      Serial.print(hunit, HEX);
-      Serial.print(' : ');
-            Serial.print(minute, HEX);
-                  Serial.println(munit, HEX);
+
                   
 //  Serial.println(hour+' '+hunit+' : '+minute+' '+munit);
   
