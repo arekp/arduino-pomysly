@@ -1,13 +1,22 @@
 
 int sensorPin = A0;    // numer portu analogowego
-int ledPin = 13;      // dioda LED
+
+//int ledPin = 13;      // dioda LED
+int inData =3;
+
 int test=0; //ilosc w test
 int kalib=0; // Kalibracja
 int poziomsum=0; //pomiar suma
 int wskaznik =0;
+int leds[] = {5, 6, 7, 8, 9, 10, 11, 12, 13,4};
+#define SIZE 10
 
-void setup() {
-
+void setup() { 
+ for (int x = 0; x < SIZE; x++) {
+    pinMode(leds[x], OUTPUT);
+  }
+  
+  pinMode(inData,INPUT);
   Serial.begin(9600);
   for(int i=1; i<17;i++){
     Serial.println("grzejemy...");
@@ -16,6 +25,7 @@ void setup() {
 
   Serial.println("kalibracja ...");
   for(int i=1;i<11;i++){
+      digitalWrite(leds[i-1], HIGH);
     int pomiar = analogRead(sensorPin);
     test = test + pomiar;
     Serial.print("..");
@@ -24,30 +34,38 @@ void setup() {
   kalib=test/10;
   Serial.print("kalibracja");
   Serial.println(kalib);
-  pinMode(ledPin, OUTPUT);  
+ 
 }
 
 void loop() {
+ // digitalWrite(w1, HIGH);
   Serial.println("Start pomiaru");
-
+Serial.println("Dmuchaj !!!!!");
+//digitalWrite(w10, HIGH);
   for(int h=1;h<6;h++){
+    digitalWrite(leds[h-1], HIGH);
     int poziom = analogRead(sensorPin);
     poziomsum = poziomsum+poziom;
+    int inAL = digitalRead(inData);
+    Serial.print("data: - > "); Serial.println(inAL);
     Serial.println(poziom);
     delay(400);
   }
-
+//digitalWrite(w10, LOW);
   int poziomAl = poziomsum/5;
-  Serial.println("serdni wynik");
-  Serial.print(poziomAl);
+  Serial.print("serdni wynik");
+  Serial.println(poziomAl);
 
   wskaznik = poziomAl - kalib;
 
-  Serial.println("wynik powyzej otoczenia");
-  Serial.print(wskaznik);
+  Serial.print("wynik powyzej otoczenia");
+  Serial.println(wskaznik);
 
 delay(5000);
 poziomsum=0;
 wskaznik=0;
+ for (int x = 0; x < SIZE; x++) {
+    digitalWrite(leds[x], LOW);
+  }
 }
 
