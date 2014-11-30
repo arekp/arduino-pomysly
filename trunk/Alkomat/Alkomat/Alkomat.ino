@@ -42,7 +42,8 @@ void loop() {
   Serial.println("Start pomiaru");
 Serial.println("Dmuchaj !!!!!");
 //digitalWrite(w10, HIGH);
-  for(int h=1;h<6;h++){
+
+  for(int h=1;h<11;h++){
     digitalWrite(leds[h-1], HIGH);
     int poziom = analogRead(sensorPin);
     poziomsum = poziomsum+poziom;
@@ -51,21 +52,35 @@ Serial.println("Dmuchaj !!!!!");
     Serial.println(poziom);
     delay(400);
   }
+  
 //digitalWrite(w10, LOW);
-  int poziomAl = poziomsum/5;
+  int poziomAl = poziomsum/10;
   Serial.print("serdni wynik");
   Serial.println(poziomAl);
 
   wskaznik = poziomAl - kalib;
 
-  Serial.print("wynik powyzej otoczenia");
+  Serial.print("wynik powyzej otoczenia: ");
   Serial.println(wskaznik);
 
 delay(5000);
-poziomsum=0;
-wskaznik=0;
+
+
  for (int x = 0; x < SIZE; x++) {
     digitalWrite(leds[x], LOW);
   }
+int val = map(wskaznik, 0, 300, 0, 10);
+  Serial.print("Wyswietlam wartos na wy swietlaczu : ");
+  Serial.println(val);
+  
+ for (int x = 0; x < val; x++) {
+    digitalWrite(leds[x], HIGH);
+  }
+  delay(5000);
+   for (int x = 0; x < SIZE; x++) {
+    digitalWrite(leds[x], LOW);
+  }
+  poziomsum=0;
+wskaznik=0;
 }
 
