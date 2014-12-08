@@ -13,3 +13,28 @@ Zakres pomiarowy od 0.05 mg/L do 10 mg/L pozwala na zastosowanie go w funkcji al
 Przelicznik: 0,1mg/L = 0,21‰.
 
 Szybkie budowanie app dla androida [http://appinventor.mit.edu]
+
+
+
+  int poziomAl = poziomsum/10; // Obliczamy usredniona wartosc z pomiaru
+  Serial.print("serdni wynik"); Serial.println(poziomAl);
+
+  wskaznik = poziomAl - kalib; // wartość powyzej danych startowych
+  Serial.print("wynik powyzej otoczenia: "); Serial.println(wskaznik);
+
+long mgCalk = map(poziomAl,0,1023,0,1000); // wartosc w mg/L dla całkowitego pomiaru
+float mgCalkF = mgCalk/1000.0;
+  Serial.print("Wartosc całkowita mg/l: "); Serial.println(mgCalkF);
+float promile =  mgCalkF*2.1;
+  Serial.print("Promile: "); Serial.println(promile);
+  
+Serial.println("-------------------------------------------------");
+long mgCzastkowe = map(wskaznik,0,1023,0,1000);
+  float mgCzastkoweF = mgCzastkowe/1000.0;
+    Serial.print("Wartosc czastkowa 2 mg/l: "); Serial.println(mgCzastkoweF);
+float promileF =  mgCzastkoweF*2.1;
+  Serial.print("PromileF : "); Serial.println(promileF);
+  
+  
+Serial.print("WYNIK;");Serial.print(kalib);Serial.print(";");Serial.print(poziomAl);Serial.print(";");Serial.print(mgCalkF);Serial.print(";");Serial.print(promile);Serial.println(";");
+Serial.print("WYNIK2;");Serial.print(kalib);Serial.print(";");Serial.print(wskaznik);Serial.print(";");Serial.print(mgCzastkoweF);Serial.print(";");Serial.print(promileF);Serial.println(";");
