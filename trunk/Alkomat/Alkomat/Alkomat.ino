@@ -4,15 +4,17 @@
 int sensorPin = A0;    // numer portu analogowego na którym czytamy wartosc
 
 //int ledPin = 13;      // dioda LED
-int inData =3; // Pin DATA z czujnika przekroczenie progu wykrywania 
+int inData =2; // Pin DATA z czujnika przekroczenie progu wykrywania 
 
 int test=0; //ilosc w test
 int kalib=0; // Kalibracja okreslenie wartosci poczatkowej
+int poziomAl=0;
 int poziomsum=0; //pomiar suma ze wskaznika podczas pomiaru
 int wskaznik =0;
+int inAL=0;
 
 int leds[] = {
-  5, 6, 7, 8, 9, 10, 11, 12, 13,4};
+  3,4,5, 6, 7, 8, 9, 10, 11, 12};
 #define SIZE 10
 
 void setup() { 
@@ -25,6 +27,7 @@ void setup() {
   for(int i=1; i<17;i++){
     Serial.println("grzejemy...");
     delay(200);
+    scrol(1,20);
   }
   Serial.println("kalibracja ...");
   for(int i=1;i<11;i++){
@@ -41,19 +44,20 @@ void setup() {
 void loop() {
   Serial.println("Start pomiaru");
   Serial.println("Dmuchaj !!!!!");
+mrugnik(5,200);
 
   for(int h=1;h<11;h++){
     digitalWrite(leds[h-1], HIGH);
     int poziom = analogRead(sensorPin); //Czytamy wartosc z czujnika
     poziomsum = poziomsum+poziom;
-    int inAL = digitalRead(inData); //Czytamy stan ustawiony na czujniku 0 / 1
+     inAL = digitalRead(inData); //Czytamy stan ustawiony na czujniku 0 / 1
     Serial.print("data: - > "); 
     Serial.println(inAL);
     Serial.println(poziom);
     delay(400);
   }
  
-  int poziomAl = poziomsum/10; // Obliczamy usredniona wartosc z pomiaru
+  poziomAl = poziomsum/10; // Obliczamy usredniona wartosc z pomiaru
   Serial.print("serdni wynik"); Serial.println(poziomAl);
 
   wskaznik = poziomAl - kalib; // wartość powyzej danych startowych
@@ -67,6 +71,9 @@ Serial.println("-------------------------------------------------");
 long mgCzastkowe = map(poziomAl,0,1023,0,10);
   Serial.print("Wartosc czastkowa mg/l: "); Serial.println(mgCzastkowe);
   
+  //Wyswietlanie danych do ANDROIDA
+   Serial.print("WYNIK;");Serial.print(kalib);Serial.print(";");Serial.print(poziomAl);Serial.print(";");Serial.print(wskaznik);Serial.print(";");Serial.print(inAL);Serial.println(";");
+   
 /*Czyszenie wskaznika */
   for (int x = 0; x < SIZE; x++) {
     digitalWrite(leds[x], LOW);
@@ -84,6 +91,39 @@ long mgCzastkowe = map(poziomAl,0,1023,0,10);
   }
   poziomsum=0;
   wskaznik=0;
+  //Czyszczenie komory
+scrol(5,200);
 }
 
-
+void scrol(int mu,int pred){
+ for (int m = 0; m < mu; m++) {
+    
+  for (int x = 0; x < SIZE; x++) {
+      delay(pred);
+    digitalWrite(leds[x], HIGH);
+  }
+ 
+ 
+  for (int x = SIZE; x > 0; x--) {
+    digitalWrite(leds[x], LOW);
+       delay(pred);
+  }
+   
+   }
+}
+void mrugnik(int mu, int pred){
+  
+   for (int m = 0; m < mu; m++) {
+    
+  for (int x = 0; x < SIZE; x++) {
+    digitalWrite(leds[x], HIGH);
+  }
+  delay(pred);
+ 
+  for (int x = 0; x < SIZE; x++) {
+    digitalWrite(leds[x], LOW);
+  }
+    delay(pred);
+   }
+ 
+}
