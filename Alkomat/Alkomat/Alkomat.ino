@@ -50,7 +50,7 @@ mrugnik(5,200);
     digitalWrite(leds[h-1], HIGH);
     int poziom = analogRead(sensorPin); //Czytamy wartosc z czujnika
     poziomsum = poziomsum+poziom;
-     inAL = digitalRead(inData); //Czytamy stan ustawiony na czujniku 0 / 1
+     inAL = digitalRead(inData); //Czytamy stan ustawiony na czujniku 0 / 1 - jest alkohol 
     Serial.print("data: - > "); 
     Serial.println(inAL);
     Serial.println(poziom);
@@ -63,21 +63,30 @@ mrugnik(5,200);
   wskaznik = poziomAl - kalib; // wartość powyzej danych startowych
   Serial.print("wynik powyzej otoczenia: "); Serial.println(wskaznik);
 
-long mgCalk = map(poziomAl,0,1023,0,10);// wartosc w mg/L dla całkowitego pomiaru
-  Serial.print("Wartosc całkowita mg/l: "); Serial.println(mgCalk);
-long promile =  mgCalk*2.1;
+long mgCalk = map(poziomAl,0,1023,0,1000); // wartosc w mg/L dla całkowitego pomiaru
+float mgCalkF = mgCalk/1000.0;
+  Serial.print("Wartosc całkowita mg/l: "); Serial.println(mgCalkF);
+float promile =  mgCalkF*2.1;
   Serial.print("Promile: "); Serial.println(promile);
-Serial.println("-------------------------------------------------");
-long mgCzastkowe = map(poziomAl,0,1023,0,10);
-  Serial.print("Wartosc czastkowa mg/l: "); Serial.println(mgCzastkowe);
   
-  //Wyswietlanie danych do ANDROIDA
-   Serial.print("WYNIK;");Serial.print(kalib);Serial.print(";");Serial.print(poziomAl);Serial.print(";");Serial.print(wskaznik);Serial.print(";");Serial.print(inAL);Serial.println(";");
+Serial.println("-------------------------------------------------");
+long mgCzastkowe = map(wskaznik,0,1023,0,1000);
+  float mgCzastkoweF = mgCzastkowe/1000.0;
+    Serial.print("Wartosc czastkowa 2 mg/l: "); Serial.println(mgCzastkoweF);
+float promileF =  mgCzastkoweF*2.1;
+  Serial.print("PromileF : "); Serial.println(promileF);
+  
+Serial.print("WYNIK;");Serial.print(kalib);Serial.print(";");Serial.print(poziomAl);Serial.print(";");Serial.print(mgCalkF);Serial.print(";");Serial.print(promile);Serial.println(";");
+Serial.print("WYNIK2;");Serial.print(kalib);Serial.print(";");Serial.print(wskaznik);Serial.print(";");Serial.print(mgCzastkoweF);Serial.print(";");Serial.print(promileF);Serial.println(";");
+
+ //Wyswietlanie danych do ANDROIDA
+//   Serial.print("WYNIK;");Serial.print(kalib);Serial.print(";");Serial.print(poziomAl);Serial.print(";");Serial.print(wskaznik);Serial.print(";");Serial.print(inAL);Serial.println(";");
    
 /*Czyszenie wskaznika */
   for (int x = 0; x < SIZE; x++) {
     digitalWrite(leds[x], LOW);
   }
+
   int val = map(wskaznik, 0, 300, 0, 10);
   Serial.print("Wyswietlam wartos na wy swietlaczu : ");
   Serial.println(val);
